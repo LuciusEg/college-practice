@@ -1,32 +1,31 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.entity";
-import { Support } from "./support.entity";
-import { Status } from "./status.entity";
-
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.entity';
+import { Support } from './support.entity';
+import { Status } from './status/status.entity';
 
 @Entity()
-export class Report{
-    @PrimaryGeneratedColumn()
-    id : number
+export class Report {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    description : string
+  @Column()
+  description: string;
 
-    @Column({type : Date})
-    created_at : Date
+  @Column({ type: Date })
+  created_at: Date;
 
-    @Column({type : Date})
-    status_updated_at : Date
+  @Column({ type: Date })
+  status_updated_at: Date;
 
-    @Column({type : Date})
-    complited_at : Date
-    
-    @ManyToOne(() => User, (user) => user.reports, {eager : true})
-    user : User
+  @Column({ type: Date })
+  complited_at: Date;
 
-    @ManyToOne(() => Support, (support) => support.reports, {eager : true})
-    support : Support
+  @ManyToOne(() => User, (user) => user.reports, { eager: true })
+  user: User;
 
-    @ManyToOne(() => Status, (status) => status.reports, {eager : true})
-    status : Status
+  @ManyToOne(() => Support, (support) => support.reports, { eager: true })
+  support: Support;
+
+  @ManyToOne(() => Status, (status) => status.reports, { eager: true })
+  status: Status;
 }
