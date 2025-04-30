@@ -7,7 +7,7 @@ import { Status } from "./status.entity";
 @Entity()
 export class Report{
     @PrimaryGeneratedColumn()
-    id : number
+    ida : number
 
     @Column()
     description : string
