@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
-import { Support } from "./support.entity";
 import { Status } from "./status.entity";
 
 
@@ -23,9 +22,6 @@ export class Report{
     
     @ManyToOne(() => User, (user) => user.reports, {eager : true})
     user : User
-
-    @ManyToOne(() => Support, (support) => support.reports, {eager : true})
-    support : Support
 
     @ManyToOne(() => Status, (status) => status.reports, {eager : true})
     status : Status
