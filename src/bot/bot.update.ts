@@ -1,7 +1,7 @@
 
 import { Context } from "telegraf";
 import { BotService } from "./bot.service";
-import { Ctx, Start, TelegrafContextType, Update } from "nestjs-telegraf";
+import { Ctx, On, Start, TelegrafContextType, Update } from "nestjs-telegraf";
 
 @Update()
 export class BotUpdate{
@@ -9,5 +9,10 @@ export class BotUpdate{
     @Start()
     onStart(@Ctx() ctx : Context){
         this.botService.onStart(ctx)
+    }
+
+    @On('text')
+    onMessage(@Ctx() ctx : Context){
+        this.botService.onMessage(ctx)
     }
 }
