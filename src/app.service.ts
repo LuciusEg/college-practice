@@ -1,8 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(
+  ){}
+  getHello(res : Response){
+    const data = {
+      message : "1",
+      number : "123"
+    }
+    res.json(data)
+    res.end()
   }
 }
