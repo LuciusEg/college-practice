@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { Status } from "./status.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { StatusCode } from "./status.enum";
+import { In } from 'typeorm';
 
 @Injectable()
 export class StatusSeeder implements OnModuleInit{
@@ -15,13 +16,26 @@ export class StatusSeeder implements OnModuleInit{
 
         const existingSet = new Set(existing.map(s => s.status))
 
-        //преобразуем enum в массив занчений, проходимся фильтром чтобы отсеять значения которых нет в бд, и с помощью map делаем прапвильную структуру для внесения в бд.
-        const toInsert = Object.values(StatusCode)
-            .filter(value => !existingSet.has(value))
-            .map(value => ({status : value}))
+        const enumSet = new Set(Object.values(StatusCode))
 
-        if(toInsert.length > 0){
-            await this.statusRepository.insert(toInsert)
-        }
+        const toInsert : string[] = []
+        const toDelete : string[] = []
+
+        enumSet.forEach((value) => {
+            if(!existingSet.has(value)){
+                toInsert.push(value)
+            }
+        })
+
+        existingSet.forEach((value) => {
+            if(!enumSet.has(value as StatusCode)){
+                toDelete.push(value)
+            }
+        })
+
+        await this.statusRepository.delete({
+            status: In(toDelete),
+        });
+        await this.statusRepository.insert(toInsert.map(value => ({status : value})))
     }
 }
