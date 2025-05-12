@@ -3,13 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
-import { StatusSeeder } from './database/entity/status/status.seeder';
 import { StatusModule } from './database/entity/status/status.module';
+import { RoleModule } from './database/entity/role/role.module';
 
 @Module({
   imports: [
     DatabaseModule,
     StatusModule,
+    RoleModule,
     ConfigModule.forRoot({
     isGlobal : true
   })],
