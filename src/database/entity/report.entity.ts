@@ -13,10 +13,10 @@ export class Report {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({nullable : true})
   text: string;
 
-  @Column()
+  @Column({nullable : true})
   photoId : string
 
   @Column({ type: 'timestamptz' })

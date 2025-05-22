@@ -61,6 +61,10 @@ export class BotService{
                 ])
             })
             
+        }else if(ctx.text){
+            ctx.reply(`${ctx.text}`, Markup.inlineKeyboard([
+                [Markup.button.callback("Сделать репорт", "create")]
+            ]));
         }
     }
 
@@ -72,7 +76,7 @@ export class BotService{
         const photos  = (msg as any).photo  as Array<{ file_id: string }>;
         const photoId = photos?.length
             ? photos[photos.length - 1].file_id
-            : 'no photo';
+            : '';
 
 
         const id = ctx.from?.id ?? 0
@@ -84,14 +88,18 @@ export class BotService{
             return
         }
 
+
+        
         const report = this.reportRepository.create({
             user,
-            photoId,
             text,
             created_at : new Date(),
             status_updated_at : new Date(),
             status,
         })
+        if(photoId != ''){
+            report.photoId = photoId;
+        }
 
         await this.reportRepository.save(report);
         await ctx.deleteMessage();
