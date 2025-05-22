@@ -7,7 +7,6 @@ import { StatusModule } from './database/entity/status/status.module';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { BotModule } from './bot/bot.module';
 
-// const stage = new Scenes.Stage<Scenes.WizardContext>([ reportWizard ]);
 
 @Module({
   imports: [
