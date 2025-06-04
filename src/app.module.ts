@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StatusModule } from './database/entity/status/status.module';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { BotModule } from './bot/bot.module';
+import { StateModule } from './state/state.module';
 
 
 @Module({
@@ -23,6 +24,7 @@ import { BotModule } from './bot/bot.module';
       }),
     }),
     BotModule,
+    StateModule,
 ],
   controllers: [AppController],
   providers: [AppService],
