@@ -105,7 +105,7 @@ export class BotService{
         if(!state) return;
 
         (state.data as User).firstName = msg.trim().toLowerCase();
-        await ctx.reply("Ввидите Фамилию")
+        await ctx.reply("Введите Фамилию")
 
         await this.stateService.setState(String(userId), RegisterState.MiddleName, state.data)
     }
