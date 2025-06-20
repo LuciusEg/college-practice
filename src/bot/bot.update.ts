@@ -18,22 +18,6 @@ export class BotUpdate {
 
   @Action('get_reports')
   async onGetReports(@Ctx() ctx: Context) {
-    const reports = await this.botService.getReports();
-    
-    if (reports.length === 0) {
-      await ctx.reply('Отчетов не найдено');
-      return;
-    }
-
-    for (const report of reports) {
-      await ctx.replyWithMarkdown(
-        `*Отчет #${report.id}*\n` +
-        `📝описание: ${report.description}\n` +
-        `🕒создано: ${report.created_at.toLocaleDateString()}\n` +
-        `🕒изменено: ${report.status_updated_at.toLocaleDateString()}\n` +
-        `🕒выполнено: ${report.complited_at.toLocaleDateString()}\n` +
-        `🔄статус: ${report.status.status}`
-      );
-    }
+   this.botService.OnGetReports(ctx);
   }
 }

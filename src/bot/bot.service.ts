@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Report } from 'src/database/entity/report.entity';
-import { Markup } from 'telegraf';
+import { Context, Markup } from 'telegraf';
 
 @Injectable()
 export class BotService {
@@ -11,14 +11,8 @@ export class BotService {
     private reportRepo: Repository<Report>,
   ) {}
 
-  async getReports() {
-    return this.reportRepo.find({ 
-      order: { created_at: 'DESC' },
-      take: 10 
-    });
-  }
 
-  onStart(ctx: any) {
+  onStart(ctx: Context) {
     ctx.reply(
       '📊 Для просмотра отчетов нажмите кнопку',
       Markup.inlineKeyboard([
@@ -27,8 +21,28 @@ export class BotService {
     );
   }
 
+  async OnGetReports(ctx: Context) {
+    const reports = await this.reportRepo.find();
+    
+    if (reports.length === 0) {
+      await ctx.reply('Отчетов не найдено');
+      return;
+    }
+
+    for (const report of reports) {
+      await ctx.replyWithMarkdown(
+        `*Отчет #${report.id}*\n` +
+        `📝описание: ${report.description}\n` +
+        `🕒создано: ${report.created_at.toLocaleDateString()}\n` +
+        `🕒изменено: ${report.status_updated_at.toLocaleDateString()}\n` +
+        `🕒выполнено: ${report.complited_at.toLocaleDateString()}\n` +
+        `🔄статус: ${report.status.status}`
+      );
+    }
+  }
+
   // Обработка текстовых сообщений (заглушка)
-  onMessage(ctx: any) {
+  onMessage(ctx: Context) {
     ctx.reply('Используйте кнопки для навигации');
   }
 }
