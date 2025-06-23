@@ -3,12 +3,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { StatusModule } from './database/entity/status/status.module';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { BotModule } from './bot/bot.module';
+import { StateModule } from './state/state.module';
+
 
 @Module({
   imports: [
-    DatabaseModule, 
+    DatabaseModule,
+    StatusModule,
     ConfigModule.forRoot({
       isGlobal : true
     }),
@@ -20,6 +24,7 @@ import { BotModule } from './bot/bot.module';
       }),
     }),
     BotModule,
+    StateModule,
 ],
   controllers: [AppController],
   providers: [AppService],

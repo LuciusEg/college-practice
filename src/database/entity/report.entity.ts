@@ -1,30 +1,35 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
-import { Support } from './support.entity';
 import { Status } from './status/status.entity';
+
+
+interface ReportDescription{
+  text : string;
+  photoId : string;
+}
 
 @Entity()
 export class Report {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  description: string;
+  @Column({nullable : true})
+  text: string;
 
-  @Column({ type: Date })
+  @Column({nullable : true})
+  photoId : string
+
+  @Column({ type: 'timestamptz' })
   created_at: Date;
 
-  @Column({ type: Date })
+  @Column({ type: 'timestamptz'})
   status_updated_at: Date;
 
-  @Column({ type: Date })
+  @Column({ type: 'timestamptz' , nullable : true})
   complited_at: Date;
 
   @ManyToOne(() => User, (user) => user.reports, { eager: true })
   user: User;
-
-  @ManyToOne(() => Support, (support) => support.reports, { eager: true })
-  support: Support;
 
   @ManyToOne(() => Status, (status) => status.reports, { eager: true })
   status: Status;
