@@ -2,10 +2,13 @@
 import { Context } from "telegraf";
 import { BotService } from "./bot.service";
 import { Ctx, On, Start, Update } from "nestjs-telegraf";
+import { UseGuards } from "@nestjs/common";
+import { UserDefaultGuard } from "src/validation/default.guard";
 
 @Update()
 export class BotUpdate{
     constructor(private readonly botService : BotService){}
+    @UseGuards(UserDefaultGuard)
     @Start()
     onStart(@Ctx() ctx : Context){
         this.botService.onStart(ctx)

@@ -7,6 +7,7 @@ import { StatusModule } from './database/entity/status/status.module';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { BotModule } from './bot/bot.module';
 import { StateModule } from './state/state.module';
+import { ValidationModule } from './validation/validation.module';
 
 
 @Module({
@@ -25,6 +26,7 @@ import { StateModule } from './state/state.module';
     }),
     BotModule,
     StateModule,
+    ValidationModule,
 ],
   controllers: [AppController],
   providers: [AppService],
