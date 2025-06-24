@@ -14,7 +14,7 @@ import { StateModule } from './state/state.module';
     DatabaseModule,
     StatusModule,
     ConfigModule.forRoot({
-      isGlobal : true
+      isGlobal: true
     }),
     TelegrafModule.forRootAsync({
       imports: [ConfigModule],
