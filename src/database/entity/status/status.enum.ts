@@ -1,5 +1,5 @@
 export enum StatusCode{
-    NewReport = 'Новая зявка',
+    NewReport = 'Новая заявка',
     InWork = 'В работе',
     Completed = 'Выполнено',
     Paused = 'Работа приостановлена',
