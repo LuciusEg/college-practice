@@ -11,13 +11,8 @@ export class BotUpdate {
     this.botService.onStart(ctx);
   }
 
-  @On('text')
-  async onMessage(@Ctx() ctx: Context) {
-    this.botService.onMessage(ctx);
-  }
-
-  @Action('get_reports')
-  async onGetReports(@Ctx() ctx: Context) {
-   this.botService.OnGetReports(ctx);
+  @On('message')
+  onMessage(@Ctx() ctx : Context) {
+    this.botService.onMessage(ctx)
   }
 }
