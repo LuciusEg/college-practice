@@ -259,4 +259,22 @@ export class BotService{
         await ctx.deleteMessage();
         await ctx.reply('Репорт отправлен ✅');
     }
+
+    async OnGetReports(ctx: Context) {
+    const reports = await this.reportRepository.find();
+    
+    if (reports.length === 0) {
+      await ctx.reply('Отчетов не найдено');
+      return;
+    }
+
+    for (const report of reports) {
+      await ctx.replyWithMarkdown(
+        `*Отчет #${report.id}*\n` +
+        `🕒создано: ${report.created_at.toLocaleDateString()}\n` +
+        `🕒изменено: ${report.status_updated_at.toLocaleDateString()}\n` +
+        `🔄статус: ${report.status.status}`
+      );
+    }
+  }
 }
