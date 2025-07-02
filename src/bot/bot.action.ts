@@ -29,6 +29,8 @@ export class BotAction {
 
   @Action("get_reports")
   async onGetReports(@Ctx() ctx: Context) {
-  const reports = await this.botService.OnGetReports(ctx);
+    ctx.answerCbQuery();
+    await ctx.deleteMessage();
+    await this.botService.OnGetReports(ctx);
   }
 }

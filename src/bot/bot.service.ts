@@ -282,7 +282,7 @@ export class BotService{
         `*Отчет #${report.id}*\n` +
         `🕒создано: ${report.created_at.toLocaleDateString()}\n` +
         `🕒изменено: ${report.status_updated_at.toLocaleDateString()}\n` +
-        `🔄статус: ${report.status.status}`
+        `🔄статус: ${report.status.name}`
       );
     }
   }
