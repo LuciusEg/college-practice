@@ -1,3 +1,3 @@
 export enum ReportState{
-    Report  = "Репорт"
+    create_report  = "Сделать Репорт"
 }
