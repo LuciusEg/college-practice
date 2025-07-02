@@ -26,4 +26,9 @@ export class BotAction {
     const id = Number(ctx.match[1]);
     this.botService.department(ctx, id);
   }
+
+  @Action("get_reports")
+  async onGetReports(@Ctx() ctx: Context) {
+  const reports = await this.botService.OnGetReports(ctx);
+  }
 }

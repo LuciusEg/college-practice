@@ -1,18 +1,18 @@
-
-import { Context } from "telegraf";
-import { BotService } from "./bot.service";
-import { Ctx, On, Start, Update } from "nestjs-telegraf";
+import { Update, Action, Ctx, Start, On } from 'nestjs-telegraf';
+import { Context } from 'telegraf';
+import { BotService } from './bot.service';
 
 @Update()
-export class BotUpdate{
-    constructor(private readonly botService : BotService){}
-    @Start()
-    onStart(@Ctx() ctx : Context){
-        this.botService.onStart(ctx)
-    }
+export class BotUpdate {
+  constructor(private readonly botService: BotService) {}
 
-    @On('message')
-    onMessage(@Ctx() ctx : Context){
-        this.botService.onMessage(ctx)
-    }
+  @Start()
+  async onStart(@Ctx() ctx: Context) {
+    this.botService.onStart(ctx);
+  }
+
+  @On('message')
+  onMessage(@Ctx() ctx : Context) {
+    this.botService.onMessage(ctx)
+  }
 }
