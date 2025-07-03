@@ -32,8 +32,8 @@ export class BotAction {
 
   @Action("/get_reports")
   async onGetReports(@Ctx() ctx: Context) {
+    await ctx.editMessageReplyMarkup(undefined);
     ctx.answerCbQuery();
-    await ctx.deleteMessage();
     await this.reportRouter.OnGetReports(ctx);
   }
 }

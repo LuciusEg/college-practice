@@ -85,36 +85,6 @@ export class ReportsRouter {
         await ctx.reply("Опишите свою проблему")
         this.stateService.setState(String(id), ReportState.create_report)
     }
-
-  /**
-   * Вывод всех репортов конкретного пользователя или всех — в зависимости
-   * от логики (здесь примитивный пример «все что есть»).
-   */
-    async listReports(ctx: Context) {
-        const reports = await this.reportRepo.find({
-            relations: ['status'],
-            order: { created_at: 'DESC' },
-        });
-
-        if (!reports.length) {
-            await ctx.reply('🗒️ Репорты отсутствуют.');
-            return;
-        }
-
-        for (const r of reports) {
-            await ctx.replyWithMarkdown(
-            `*Репорт #${r.id}*\n` +
-                `👤 Пользователь: ${r.user?.firstName ?? '—'}\n` +
-                `📅 Создан: ${r.created_at.toLocaleDateString()}\n` +
-                `🔄 Статус: ${r.status.name}\n` +
-                (r.text ? `\n${r.text}` : ''),
-            );
-
-            if (r.photoId) {
-            await ctx.replyWithPhoto(r.photoId);
-            }
-        }
-    }
     async OnGetReports(ctx: Context) {
         const reports = await this.reportRepo.find();
         
