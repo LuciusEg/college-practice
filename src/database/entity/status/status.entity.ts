@@ -7,7 +7,7 @@ export class Status {
   id: number;
 
   @Column({ length: 25, unique : true})
-  status: string;
+  name: string;
 
   @OneToMany(() => Report, (report) => report.status)
   reports: Report[];

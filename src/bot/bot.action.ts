@@ -6,10 +6,11 @@ import { Action, Ctx, Update } from 'nestjs-telegraf';
 export class BotAction {
   constructor(private readonly botService: BotService) {}
 
-  @Action('create')
-  onCreate(@Ctx() ctx: Context) {
+  @Action('create_report')
+  async onCreate(@Ctx() ctx: Context) {
+    await ctx.editMessageReplyMarkup(undefined);
     ctx.answerCbQuery();
-    this.botService.create(ctx);
+    this.botService.createQuestion(ctx);
   }
   @Action(/select_company_(\d+)/)
   async onSelectCompany(@Ctx() ctx: Context & { match: RegExpMatchArray }) {
@@ -28,6 +29,8 @@ export class BotAction {
 
   @Action("get_reports")
   async onGetReports(@Ctx() ctx: Context) {
-  const reports = await this.botService.OnGetReports(ctx);
+    ctx.answerCbQuery();
+    await ctx.deleteMessage();
+    await this.botService.OnGetReports(ctx);
   }
 }

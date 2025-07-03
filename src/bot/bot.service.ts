@@ -5,12 +5,13 @@ import { Report } from "src/database/entity/report.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/database/entity/user.entity";
 import { Status } from "src/database/entity/status/status.entity";
-import { StatusCode } from "src/database/entity/status/status.enum";
 import { StateService } from "src/state/state.service";
 import { RegisterState } from "src/state/enum/register.enum";
 import { ReportState } from "src/state/enum/report.enum";
 import { Company } from "src/database/entity/company.entity";
 import { Department } from "src/database/entity/department.entity";
+import { Message } from "@telegraf/types/message";
+import { StatusCode } from "src/database/entity/status/status.enum";
 
 @Injectable()
 export class BotService{
@@ -60,8 +61,8 @@ export class BotService{
         const state = await this.stateService.getState(String(userId));
         if (!state) return;
         switch (state.action) {
-            case ReportState.Report:
-            this.selectReport(ctx);
+            case ReportState.create_report:
+            this.createReport(ctx);
             break;
 
             case RegisterState.FirstName:
@@ -221,43 +222,51 @@ export class BotService{
                     ]));
         }
     }
-
-    async create(ctx: Context) {
-        const msg = ctx.callbackQuery?.message;
-        if (!msg) return;
-
-        const text    = (msg as any).caption ?? (msg as any).text    ?? 'no text';
-        const photos  = (msg as any).photo  as Array<{ file_id: string }>;
-        const photoId = photos?.length
-            ? photos[photos.length - 1].file_id
-            : '';
-
-
-        const id = ctx.from?.id ?? 0
-        const user =  await this.userRepository.findOne({where : {telegramId : String(id)}})
-
-        const status = await this.statusRepository.findOne({where : {status : StatusCode.NewReport}})
-
-        if(!user || !status){
-            return
-        }
-
-
+    
+    async createQuestion(ctx: Context) {
+        const id = ctx.from?.id
+        if(!id) return;
         
-        const report = this.reportRepository.create({
-            user,
-            text,
-            created_at : new Date(),
-            status_updated_at : new Date(),
-            status,
-        })
-        if(photoId != ''){
-            report.photoId = photoId;
+        await ctx.reply("Опишите свою проблему")
+        this.stateService.setState(String(id), ReportState.create_report)
+    }
+    
+    async createReport(ctx : Context){
+        const telegramId = ctx.from?.id
+        const user = await this.userRepository.findOne({where : {telegramId : String(telegramId)}})
+
+        if (!telegramId || !user) return;
+
+        const message = ctx.message
+
+        const text = ctx.text ?? "";
+
+        const photoArray = (message as Message.PhotoMessage).photo
+
+        let photoId = ""
+
+        if(photoArray){
+            if(photoArray.length > 1){
+                photoId = photoArray[photoArray.length - 1].file_id
+            }
         }
 
-        await this.reportRepository.save(report);
-        await ctx.deleteMessage();
+        const status = await this.statusRepository.findOne({where : {name : StatusCode.NewReport}})
+
+        if (!status) return;
+
+        const report = this.reportRepository.create()
+
+        report.user = user
+        report.status = status
+        report.created_at = new Date()
+        report.status_updated_at = new Date()
+        report.text = text
+        report.photoId = photoId
+
+        await this.reportRepository.save(report)
         await ctx.reply('Репорт отправлен ✅');
+        this.stateService.clearState(String(telegramId))
     }
 
     async OnGetReports(ctx: Context) {
@@ -273,7 +282,7 @@ export class BotService{
         `*Отчет #${report.id}*\n` +
         `🕒создано: ${report.created_at.toLocaleDateString()}\n` +
         `🕒изменено: ${report.status_updated_at.toLocaleDateString()}\n` +
-        `🔄статус: ${report.status.status}`
+        `🔄статус: ${report.status.name}`
       );
     }
   }

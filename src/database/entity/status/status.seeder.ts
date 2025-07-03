@@ -14,7 +14,7 @@ export class StatusSeeder implements OnModuleInit{
     async onModuleInit() {
         const existing = await this.statusRepository.find()
 
-        const existingSet = new Set(existing.map(s => s.status))
+        const existingSet = new Set(existing.map(s => s.name))
 
         const enumSet = new Set(Object.values(StatusCode))
 
@@ -34,8 +34,8 @@ export class StatusSeeder implements OnModuleInit{
         })
 
         await this.statusRepository.delete({
-            status: In(toDelete),
+            name : In(toDelete),
         });
-        await this.statusRepository.insert(toInsert.map(value => ({status : value})))
+        await this.statusRepository.insert(toInsert.map(value => ({name : value})))
     }
 }
