@@ -36,9 +36,9 @@ export class BotService{
         const user = await this.userRepository.findOne({where : {telegramId : String(userId)}})
 
         if(!user){
-            this.stateService.setState(String(userId), RegisterState.FirstName)
-            this.onMessage(ctx)
-            return
+            await this.stateService.setState(String(userId), RegisterState.FirstName);
+            await this.onMessage(ctx);
+            return;
         }
 
         ctx.reply("Выберите операцию:", {

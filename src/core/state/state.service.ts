@@ -9,7 +9,7 @@ export class StateService {
   constructor(
     @InjectRepository(State)
     private readonly repository: Repository<State>,
-  ) {}
+  ) { }
 
   async setState(telegramId: string, action: string, data: Record<string, any> = {}): Promise<void> {
     const existing = await this.repository.findOne({ where: { telegramId } });

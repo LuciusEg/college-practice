@@ -8,11 +8,11 @@ export class BotUpdate {
 
   @Start()
   async onStart(@Ctx() ctx: Context) {
-    this.botService.onStart(ctx);
+    await this.botService.onStart(ctx);
   }
 
   @On('message')
-  onMessage(@Ctx() ctx : Context) {
-    this.botService.onMessage(ctx)
+  async onMessage(@Ctx() ctx : Context) {
+    await this.botService.onMessage(ctx);
   }
 }
