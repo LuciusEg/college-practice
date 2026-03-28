@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/domains/entity/user.entity';
 import { Company } from 'src/domains/entity/company.entity';
 import { Department } from 'src/domains/entity/department.entity';
+import { Role } from 'src/domains/entity/role/role.entity';
 import { StateModule } from 'src/core/state/state.module';
 import { RegisterRouter } from './register.router';
 import { RouteModule } from 'src/core/route/route.module';
@@ -11,10 +12,10 @@ import { RouteModule } from 'src/core/route/route.module';
 @Module({
   imports: [
     StateModule,
-    TypeOrmModule.forFeature([User, Company, Department]),
-    RouteModule
+    TypeOrmModule.forFeature([User, Company, Department, Role]),
+    RouteModule,
   ],
   providers: [RegisterRouter],
-  exports : [RegisterRouter]      // сам router
+  exports: [RegisterRouter], // сам router
 })
 export class RegisterModule {}

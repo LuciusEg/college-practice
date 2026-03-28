@@ -35,71 +35,71 @@ export class ReportsRouter {
    * ReportState.create_report (например методом createQuestion).
    * Принимаем текст/фото, создаём Report, сбрасываем state.
    */
-    async createReport(ctx: Context) {
-        const tgId = ctx.from?.id;
-        if (!tgId) return;
+  async createReport(ctx: Context) {
+    const tgId = ctx.from?.id;
+    if (!tgId) return;
 
-        const user = await this.userRepo.findOne({
-            where: { telegramId: String(tgId) },
-        });
-        if (!user) {
-            await ctx.reply('Сначала зарегистрируйтесь.');
-            return;
-        }
-
-        // --- собираем текст и фото ---
-        const text = ctx?.text ?? '';
-        const photoArr = (ctx.message as Message.PhotoMessage)?.photo;
-        const photoId =
-            photoArr && photoArr.length > 0
-            ? photoArr[photoArr.length - 1].file_id
-            : '';
-
-        // --- статус «Новый репорт» ---
-        const status = await this.statusRepo.findOne({
-            where: { name: StatusCode.NewReport },
-        });
-        if (!status) {
-            await ctx.reply('Ошибка: статус NewReport не найден.');
-            return;
-        }
-        // --- создаём и сохраняем репорт ---
-        const report = this.reportRepo.create({
-            user,
-            status,
-            text,
-            photoId,
-            created_at: new Date(),
-            status_updated_at: new Date(),
-        });
-        await this.reportRepo.save(report);
-
-        await ctx.reply('📝 Репорт создан, спасибо!')
-        await this.stateService.clearState(String(tgId));
+    const user = await this.userRepo.findOne({
+      where: { telegramId: String(tgId) },
+    });
+    if (!user) {
+      await ctx.reply('Сначала зарегистрируйтесь.');
+      return;
     }
 
-    async createQuestion(ctx : Context) {
-        const id = ctx.from?.id
-        if(!id) return;
-            
-        await ctx.reply("Опишите свою проблему")
-        this.stateService.setState(String(id), ReportState.create_report)
-    }
-    async OnGetReports(ctx: Context) {
-        const reports = await this.reportRepo.find();
-        
-        if (reports.length === 0) {
-            await ctx.reply('Отчетов не найдено');
-            return;
-        }
+    // --- собираем текст и фото ---
+    const text = ctx?.text ?? '';
+    const photoArr = (ctx.message as Message.PhotoMessage)?.photo;
+    const photoId =
+      photoArr && photoArr.length > 0
+        ? photoArr[photoArr.length - 1].file_id
+        : '';
 
-        for (const report of reports) {
-            await ctx.replyWithMarkdown(
-                `*Отчет #${report.id}*\n` +
-                `🕒создано: ${report.created_at.toLocaleDateString()}\n` +
-                `🕒изменено: ${report.status_updated_at.toLocaleDateString()}\n` +
-                `🔄статус: ${report.status.name}`
-            );
-        }
+    // --- статус «Новый репорт» ---
+    const status = await this.statusRepo.findOne({
+      where: { name: StatusCode.NewReport },
+    });
+    if (!status) {
+      await ctx.reply('Ошибка: статус NewReport не найден.');
+      return;
     }
+    // --- создаём и сохраняем репорт ---
+    const report = this.reportRepo.create({
+      user,
+      status,
+      text,
+      photoId,
+      created_at: new Date(),
+      status_updated_at: new Date(),
+    });
+    await this.reportRepo.save(report);
+
+    await ctx.reply('📝 Репорт создан, спасибо!');
+    await this.stateService.clearState(String(tgId));
+  }
+
+  async createQuestion(ctx: Context) {
+    const id = ctx.from?.id;
+    if (!id) return;
+
+    await ctx.reply('Опишите свою проблему');
+    this.stateService.setState(String(id), ReportState.create_report);
+  }
+  async OnGetReports(ctx: Context) {
+    const reports = await this.reportRepo.find();
+
+    if (reports.length === 0) {
+      await ctx.reply('Отчетов не найдено');
+      return;
+    }
+
+    for (const report of reports) {
+      await ctx.replyWithMarkdown(
+        `*Отчет #${report.id}*\n` +
+          `🕒создано: ${report.created_at.toLocaleDateString()}\n` +
+          `🕒изменено: ${report.status_updated_at.toLocaleDateString()}\n` +
+          `🔄статус: ${report.status.name}`,
+      );
+    }
+  }
 }

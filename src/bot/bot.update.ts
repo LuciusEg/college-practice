@@ -1,4 +1,4 @@
-import { Update, Action, Ctx, Start, On } from 'nestjs-telegraf';
+import { Update, Action, Ctx, Start, On, Next } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { BotService } from './bot.service';
 
@@ -10,9 +10,9 @@ export class BotUpdate {
   async onStart(@Ctx() ctx: Context) {
     await this.botService.onStart(ctx);
   }
-
   @On('message')
-  async onMessage(@Ctx() ctx : Context) {
+  async onMessage(@Ctx() ctx: Context, @Next() next: () => Promise<void>) {
     await this.botService.onMessage(ctx);
+    await next();
   }
 }
