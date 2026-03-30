@@ -1,6 +1,7 @@
-import { Update, Action, Ctx, Start, On, Next } from 'nestjs-telegraf';
+import { Update, Action, Ctx, Start, On, Next, Command } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { BotService } from './bot.service';
+import { sendUnknownCommand } from 'src/domains/response/bot.response';
 
 @Update()
 export class BotUpdate {
@@ -11,8 +12,11 @@ export class BotUpdate {
     await this.botService.onStart(ctx);
   }
   @On('message')
-  async onMessage(@Ctx() ctx: Context, @Next() next: () => Promise<void>) {
-    await this.botService.onMessage(ctx);
-    await next();
+  async onMessage(@Ctx() ctx: Context) {
+    const isStateProcessed = await this.botService.onMessage(ctx);
+
+    if (!isStateProcessed) {
+      await sendUnknownCommand(ctx);
+    }
   }
 }

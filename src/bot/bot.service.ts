@@ -47,20 +47,21 @@ export class BotService {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'Create report', callback_data: '/create_report' },
-            { text: 'Get all Reports', callback_data: '/get_reports' },
+            { text: 'Создать отчет', callback_data: '/create_report' },
+            { text: 'Все отчеты', callback_data: '/get_reports' },
           ],
         ],
       },
     });
   }
-  async onMessage(ctx: Context) {
+  async onMessage(ctx: Context): Promise<boolean> {
     const userId = ctx.from?.id;
-    if (!userId) return;
+    if (!userId) return false;
 
     const state = await this.stateService.getState(String(userId));
-    if (!state) return;
+    if (!state) return false;
 
-    this.router.exec(state.action, ctx);
+    await this.router.exec(state.action, ctx);
+    return true;
   }
 }

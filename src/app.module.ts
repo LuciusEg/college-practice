@@ -26,6 +26,7 @@ import { TestModule } from './bot/test/test.module';
         token: configService.getOrThrow<string>('BOT_TOKEN'),
       }),
     }),
+    TestModule,
     BotModule,
     StateModule,
     RouteModule,

@@ -19,7 +19,7 @@ export class TestUpdate {
   @Permission(RoleCode.User)
   @Command('test')
   async test(@Ctx() ctx: Context) {
-    await ctx.reply('test');
+    await ctx.reply('работает');
   }
 
   @UseInterceptors(PermissionInterceptor)
@@ -38,7 +38,7 @@ export class TestUpdate {
     const user = ctx.state.user;
     await this.stateService.clearState(String(user.telegramId));
     await ctx.reply(
-      `hello ${user.firstName} ${user.lastName} ${user.middleName}`,
+      `Здравствуйте, ${user.firstName} ${user.lastName} ${user.middleName}`,
     );
   }
 }
