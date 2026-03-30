@@ -9,9 +9,13 @@ export class StateService {
   constructor(
     @InjectRepository(State)
     private readonly repository: Repository<State>,
-  ) { }
+  ) {}
 
-  async setState(telegramId: string, action: string, data: Record<string, any> = {}): Promise<void> {
+  async setState(
+    telegramId: string,
+    action: string,
+    data: Record<string, any> = {},
+  ): Promise<void> {
     const existing = await this.repository.findOne({ where: { telegramId } });
     if (existing) {
       existing.action = action;
@@ -31,7 +35,10 @@ export class StateService {
     await this.repository.delete({ telegramId });
   }
 
-  async updateData(telegramId: string, data: Record<string, any>): Promise<void> {
+  async updateData(
+    telegramId: string,
+    data: Record<string, any>,
+  ): Promise<void> {
     const state = await this.repository.findOne({ where: { telegramId } });
     if (!state) return;
     state.data = { ...state.data, ...data };

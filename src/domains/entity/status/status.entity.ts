@@ -6,7 +6,7 @@ export class Status {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 25, unique : true})
+  @Column({ length: 25, unique: true })
   name: string;
 
   @OneToMany(() => Report, (report) => report.status)

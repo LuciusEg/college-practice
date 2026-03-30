@@ -1,5 +1,5 @@
-export enum RoleCode{
-    Administrator = 'администратор',
-    Support = 'тех-поддержка',
-    User = 'пользователь',
+export enum RoleCode {
+  Administrator = 'администратор',
+  Support = 'тех-поддержка',
+  User = 'пользователь',
 }

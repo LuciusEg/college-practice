@@ -10,13 +10,14 @@ import { StateModule } from './core/state/state.module';
 import { RouteModule } from './core/route/route.module';
 import { RegisterModule } from './domains/register/register.module';
 import { ReportsModule } from './domains/report/report.module';
+import { TestModule } from './bot/test/test.module';
 
 @Module({
   imports: [
     DatabaseModule,
     StatusModule,
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
     TelegrafModule.forRootAsync({
       imports: [ConfigModule],
@@ -25,12 +26,13 @@ import { ReportsModule } from './domains/report/report.module';
         token: configService.getOrThrow<string>('BOT_TOKEN'),
       }),
     }),
+    TestModule,
     BotModule,
     StateModule,
     RouteModule,
     RegisterModule,
     ReportsModule,
-],
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

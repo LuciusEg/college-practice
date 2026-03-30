@@ -7,10 +7,13 @@ import { Repository } from 'typeorm';
 import { User } from 'src/domains/entity/user.entity';
 import { Company } from 'src/domains/entity/company.entity';
 import { Department } from 'src/domains/entity/department.entity';
+import { Role } from 'src/domains/entity/role/role.entity';
+import { RoleCode } from 'src/domains/entity/role/role.enum';
 
 import { StateService } from 'src/core/state/state.service';
 import { RegisterState } from 'src/domains/register/register.enum';
 import { BaseRouter } from 'src/core/route/state-routing';
+import { StateRoute } from 'src/core/route/state-route.decorator';
 import { Context } from 'telegraf';
 
 @Injectable()
@@ -25,16 +28,12 @@ export class RegisterRouter {
     private readonly companyRepo: Repository<Company>,
     @InjectRepository(Department)
     private readonly deptRepo: Repository<Department>,
-  ) {
-    // Регистрируем обработчики для разных шагов регистрации
-    router.register(RegisterState.FirstName, this.firstName.bind(this));
-    router.register(RegisterState.LastName, this.lastName.bind(this));
-    router.register(RegisterState.MiddleName, this.middleName.bind(this));
-    router.register(RegisterState.Company, this.company.bind(this));
-    router.register(RegisterState.Department, this.department.bind(this));
-  }
+    @InjectRepository(Role)
+    private readonly roleRepo: Repository<Role>,
+  ) {}
 
   /** Шаг 1: спрашиваем имя и создаём заготовку User */
+  @StateRoute(RegisterState.FirstName)
   async firstName(ctx: Context) {
     const userId = ctx.from?.id;
     if (!userId) return;
@@ -51,6 +50,7 @@ export class RegisterRouter {
   }
 
   /** Шаг 2: получаем имя, спрашиваем фамилию */
+  @StateRoute(RegisterState.LastName)
   async lastName(ctx: Context) {
     const userId = ctx.from?.id;
     const text = ctx?.text;
@@ -71,6 +71,7 @@ export class RegisterRouter {
   }
 
   /** Шаг 3: получаем фамилию, спрашиваем отчество */
+  @StateRoute(RegisterState.MiddleName)
   async middleName(ctx: Context) {
     const userId = ctx.from?.id;
     const text = ctx?.text;
@@ -95,6 +96,7 @@ export class RegisterRouter {
    * – если это текстовое сообщение → сохраняем отчество, показываем список компаний
    * – если callback_query с выбором компании → сохраняем company, показываем список подразделений
    */
+  @StateRoute(RegisterState.Company)
   async company(ctx: Context) {
     const userId = ctx.from?.id;
     if (!userId) return;
@@ -111,7 +113,9 @@ export class RegisterRouter {
       if (!m) return;
 
       const companyId = Number(m[1]);
-      const company = await this.companyRepo.findOne({ where: { id: companyId } });
+      const company = await this.companyRepo.findOne({
+        where: { id: companyId },
+      });
       if (!company) return;
 
       user.company = company;
@@ -125,7 +129,7 @@ export class RegisterRouter {
 
       await ctx.reply('Выберите подразделение:', {
         reply_markup: {
-          inline_keyboard: depts.map(d => [
+          inline_keyboard: depts.map((d) => [
             { text: d.name, callback_data: `select_department_${d.id}` },
           ]),
         },
@@ -154,7 +158,7 @@ export class RegisterRouter {
 
     await ctx.reply('Выберите предприятие:', {
       reply_markup: {
-        inline_keyboard: companies.map(c => [
+        inline_keyboard: companies.map((c) => [
           { text: c.name, callback_data: `select_company_${c.id}` },
         ]),
       },
@@ -171,6 +175,7 @@ export class RegisterRouter {
   /**
    * Шаг 5: выбор подразделения → финальная сохранение User
    */
+  @StateRoute(RegisterState.Department)
   async department(ctx: Context) {
     const userId = ctx.from?.id;
     if (!userId) return;
@@ -200,7 +205,15 @@ export class RegisterRouter {
       company: user.company,
       department: user.department,
     });
-    await this.userRepo.save(newUser);
+    // Важно: сохраняем результат в переменную savedUser, чтобы у него появился настоящий ID из базы!
+    const savedUser = await this.userRepo.save(newUser);
+
+    // Выдаем дефолтную роль обычного пользователя (User)
+    const userRole = this.roleRepo.create({
+      name: RoleCode.User,
+      user: savedUser,
+    });
+    await this.roleRepo.save(userRole);
 
     // очищаем состояние и сообщаем об успехе
     await this.stateService.clearState(String(userId));
