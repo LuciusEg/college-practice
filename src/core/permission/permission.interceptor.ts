@@ -49,7 +49,7 @@ export class PermissionInterceptor implements NestInterceptor {
 
     const user = await this.userRepository.findOne({
       where: { telegramId: String(user_id) },
-      relations: ['roles'],
+      relations: ['roles', 'company', 'department'],
     });
 
     if (!user) {
