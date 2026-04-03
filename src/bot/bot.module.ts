@@ -13,7 +13,14 @@ import { RouteModule } from 'src/core/route/route.module';
 import { RegisterModule } from 'src/domains/register/register.module';
 import { ReportsModule } from 'src/domains/report/report.module';
 @Module({
-    providers : [BotService, BotUpdate, BotAction],
-    imports : [TypeOrmModule.forFeature([Report, User, Status, Company, Department]), StateModule, RouteModule, RegisterModule, ReportsModule],
+  providers: [BotService, BotUpdate, BotAction],
+  imports: [
+    TypeOrmModule.forFeature([Report, User, Status, Company, Department]),
+    StateModule,
+    RouteModule,
+    RegisterModule,
+    ReportsModule,
+  ],
+  exports: [BotService],
 })
 export class BotModule {}

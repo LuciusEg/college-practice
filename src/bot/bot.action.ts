@@ -7,8 +7,8 @@ import { ReportsRouter } from 'src/domains/report/report.router';
 @Update()
 export class BotAction {
   constructor(
-    private readonly registerRouter : RegisterRouter,
-    private readonly reportRouter : ReportsRouter,
+    private readonly registerRouter: RegisterRouter,
+    private readonly reportRouter: ReportsRouter,
   ) {}
 
   @Action('/create_report')
@@ -30,7 +30,7 @@ export class BotAction {
     this.registerRouter.department(ctx);
   }
 
-  @Action("/get_reports")
+  @Action('/get_reports')
   async onGetReports(@Ctx() ctx: Context) {
     await ctx.editMessageReplyMarkup(undefined);
     ctx.answerCbQuery();

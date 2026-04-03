@@ -16,6 +16,6 @@ import { ReportsRouter } from './report.router';
     TypeOrmModule.forFeature([Report, Status, User]),
   ],
   providers: [ReportsRouter],
-  exports : [ReportsRouter]
+  exports: [ReportsRouter],
 })
 export class ReportsModule {}

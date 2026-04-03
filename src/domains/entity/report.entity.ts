@@ -2,10 +2,9 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Status } from './status/status.entity';
 
-
-interface ReportDescription{
-  text : string;
-  photoId : string;
+interface ReportDescription {
+  text: string;
+  photoId: string;
 }
 
 @Entity()
@@ -13,19 +12,19 @@ export class Report {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable : true})
+  @Column({ nullable: true })
   text: string;
 
-  @Column({nullable : true})
-  photoId : string
+  @Column({ nullable: true })
+  photoId: string;
 
   @Column({ type: 'timestamptz' })
   created_at: Date;
 
-  @Column({ type: 'timestamptz'})
+  @Column({ type: 'timestamptz' })
   status_updated_at: Date;
 
-  @Column({ type: 'timestamptz' , nullable : true})
+  @Column({ type: 'timestamptz', nullable: true })
   complited_at: Date;
 
   @ManyToOne(() => User, (user) => user.reports, { eager: true })
