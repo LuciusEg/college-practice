@@ -61,55 +61,37 @@ export class SettingsService {
     });
   }
 
-  // --- Фамилия ---
-  async editLastname(ctx: Context) {
-    const telegramId = String(ctx.from!.id);
-    const lastname = ctx.text;
-    if (!lastname) return;
 
-    const formatted = this.capitalize(lastname);
+  async updateUserStringField(ctx: Context, field: keyof User, successMessage: string) {
+    const telegramId = String(ctx.from!.id);
+    const value = ctx.text;
+    if (!value) return;
+
+    const formatted = this.capitalize(value);
+    
     await this.userRepository.update(
       { telegramId },
-      { lastName: formatted },
+      { [field]: formatted },
     );
 
-    await ctx.reply(`✅ Фамилия изменена на: ${formatted}`);
+    await ctx.reply(`✅ ${successMessage}: ${formatted}`);
     await this.stateService.clearState(telegramId);
     await this.refreshAndShow(ctx);
+  }
+
+  // --- Фамилия ---
+  async editLastname(ctx: Context) {
+    return this.updateUserStringField(ctx, 'lastName', 'Фамилия изменена на');
   }
 
   // --- Имя ---
   async editFirstname(ctx: Context) {
-    const telegramId = String(ctx.from!.id);
-    const firstname = ctx.text;
-    if (!firstname) return;
-
-    const formatted = this.capitalize(firstname);
-    await this.userRepository.update(
-      { telegramId },
-      { firstName: formatted },
-    );
-
-    await ctx.reply(`✅ Имя изменено на: ${formatted}`);
-    await this.stateService.clearState(telegramId);
-    await this.refreshAndShow(ctx);
+    return this.updateUserStringField(ctx, 'firstName', 'Имя изменено на');
   }
 
   // --- Отчество ---
   async editMiddlename(ctx: Context) {
-    const telegramId = String(ctx.from!.id);
-    const middlename = ctx.text;
-    if (!middlename) return;
-
-    const formatted = this.capitalize(middlename);
-    await this.userRepository.update(
-      { telegramId },
-      { middleName: formatted },
-    );
-
-    await ctx.reply(`✅ Отчество изменено на: ${formatted}`);
-    await this.stateService.clearState(telegramId);
-    await this.refreshAndShow(ctx);
+    return this.updateUserStringField(ctx, 'middleName', 'Отчество изменено на');
   }
 
   // --- Подразделение: шаг 1 — показать список компаний ---
