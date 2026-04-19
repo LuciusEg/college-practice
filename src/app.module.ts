@@ -11,6 +11,7 @@ import { RouteModule } from './core/route/route.module';
 import { RegisterModule } from './domains/register/register.module';
 import { ReportsModule } from './domains/report/report.module';
 import { TestModule } from './bot/test/test.module';
+import { SettingsModule } from './domains/settings/settings.module';
 
 @Module({
   imports: [
@@ -26,12 +27,14 @@ import { TestModule } from './bot/test/test.module';
         token: configService.getOrThrow<string>('BOT_TOKEN'),
       }),
     }),
+    SettingsModule,
     TestModule,
-    BotModule,
     StateModule,
     RouteModule,
     RegisterModule,
     ReportsModule,
+    //botmoudle should be last for correct work of onMessage method
+    BotModule,
   ],
   controllers: [AppController],
   providers: [AppService],
