@@ -5,3 +5,9 @@ export const sendUnknownCommand = async (ctx: Context): Promise<void> => {
     'Извините, я вас не понял. Пожалуйста, напишите команду /start.',
   );
 };
+
+export const sendUserBanned = async (ctx: Context): Promise<void> => {
+  await ctx.reply(
+    'Извините, вы заблокированы. Пожалуйста, обратитесь к администратору.',
+  );
+};
