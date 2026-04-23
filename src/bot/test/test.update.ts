@@ -23,7 +23,7 @@ export class TestUpdate {
   }
 
   @UseInterceptors(PermissionInterceptor)
-  @Permission(RoleCode.User)
+  @Permission(RoleCode.Administrator)
   @Command('getTestState')
   async anotherTest(@Ctx() ctx: Context) {
     const user = ctx.state.user;

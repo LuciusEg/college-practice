@@ -1,7 +1,10 @@
 import { Update, Action, Ctx, Start, On, Next, Command } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { BotService } from './bot.service';
-import { sendUnknownCommand } from 'src/domains/response/bot.response';
+import {
+  sendUnknownCommand,
+  sendUserBanned,
+} from 'src/domains/response/bot.response';
 
 @Update()
 export class BotUpdate {

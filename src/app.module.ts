@@ -11,6 +11,8 @@ import { RouteModule } from './core/route/route.module';
 import { RegisterModule } from './domains/register/register.module';
 import { ReportsModule } from './domains/report/report.module';
 import { TestModule } from './bot/test/test.module';
+import { BanMiddleware } from './domains/middleware/ban.middleware';
+import { MiddlewareModule } from './domains/middleware/middleware.module';
 
 @Module({
   imports: [
@@ -20,10 +22,14 @@ import { TestModule } from './bot/test/test.module';
       isGlobal: true,
     }),
     TelegrafModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      imports: [ConfigModule, MiddlewareModule],
+      inject: [ConfigService, BanMiddleware],
+      useFactory: (
+        configService: ConfigService,
+        banMiddleware: BanMiddleware,
+      ) => ({
         token: configService.getOrThrow<string>('BOT_TOKEN'),
+        middlewares: [banMiddleware.use],
       }),
     }),
     TestModule,
